@@ -9,6 +9,7 @@ function App() {
       <SocketProvider>
       <Routes>
           <Route path="/" element={<Home/>} />
+          <Route path='/room/:roomId' element={`<h1>Hey there!</h1> you are in room`} />
       </Routes>
       </SocketProvider>
     </div>
