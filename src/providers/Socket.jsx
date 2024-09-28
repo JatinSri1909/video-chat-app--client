@@ -10,10 +10,7 @@ export const useSocket = () => {
 export const SocketProvider = (props) => {
   const socket = useMemo(
     () =>
-      io({
-        host: "localhost",
-        port: 8080,
-      }),
+      io("http://localhost:8080"),
     []
   );
 
