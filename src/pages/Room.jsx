@@ -14,7 +14,7 @@ const Room = () => {
         socket.emit("call-user", { emailId, offer });
     }, [createOffer, socket]);
 
-    const handleIncomingCall = useCallback(async(data) => {
+    const handleIncomingCall = useCallback((data) => {
       const { from, offer } = data;
       console.log("Incoming call from", from, offer);
     }, []);

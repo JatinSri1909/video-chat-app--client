@@ -6,8 +6,8 @@ const Home = () => {
   const { socket } = useSocket();
   const navigate = useNavigate();
 
-  const [emailId, setEmailId] = useState();
-  const [roomId, setRoomId] = useState();
+  const [emailId, setEmailId] = useState('');
+  const [roomId, setRoomId] = useState('');
 
   const handleRoomJoined = useCallback(({ roomId }) => {
     navigate(`/room/${roomId}`);
