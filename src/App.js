@@ -2,6 +2,7 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import { SocketProvider } from './providers/Socket'
+import Room from './pages/Room';
 
 function App() {
   return (
@@ -9,7 +10,7 @@ function App() {
       <SocketProvider>
       <Routes>
           <Route path="/" element={<Home/>} />
-          <Route path='/room/:roomId' element={`<h1>Hey there!</h1> you are in room`} />
+          <Route path='/room/:roomId' element={<Room/>} />
       </Routes>
       </SocketProvider>
     </div>
