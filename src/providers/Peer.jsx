@@ -52,9 +52,16 @@ export const PeerProvider = (props) => {
     }
   };
 
+  const sendStream = async (stream) => {
+    const tracks = stream.getTracks();
+    for (const track of tracks) {
+      peer.addTrack(track, stream);
+    }
+  }
+
 
   return (
-    <PeerContext.Provider value={{peer, createOffer, createAnswer, setRemoteAns }}>
+    <PeerContext.Provider value={{peer, createOffer, createAnswer, setRemoteAns, sendStream }}>
         {props.children}
     </PeerContext.Provider>
   );
