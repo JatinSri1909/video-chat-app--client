@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 
 const SocketContext = React.createContext(null);
 
-const host = process.env.HOST || "http://localhost:5000";
+const host = process.env.REACT_APP_HTTP_HOST || "http://localhost:5000";
 
 export const useSocket = () => {
   return React.useContext(SocketContext);
