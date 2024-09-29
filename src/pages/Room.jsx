@@ -66,11 +66,16 @@ const Room = () => {
   );
 
   const getUserMediaStream = useCallback(async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: true,
-    });
-    setMyStream(stream);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
+      setMyStream(stream);
+      console.log("Obtained user media stream");
+    } catch (error) {
+      console.error("Error obtaining user media stream:", error);
+    }
   }, []);
 
   const handleNegotiationNeeded = useCallback(async () => {
