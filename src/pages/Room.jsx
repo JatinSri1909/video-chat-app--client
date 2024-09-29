@@ -48,12 +48,11 @@ const Room = () => {
       try {
         await setRemoteAns(ans);
         console.log("Set remote answer");
-        await sendStream(myStream);
       } catch (error) {
         console.error("Error setting remote answer:", error);
       }
     },
-    [setRemoteAns, sendStream, myStream]
+    [setRemoteAns]
   );
 
   const getUserMediaStream = useCallback(async () => {
@@ -92,7 +91,7 @@ const Room = () => {
   return (
     <div className="room-page-container">
       <h1>Room</h1>
-      <button onClick={(e) => sendStream(myStream)}>Send Stream</button>
+      <button onClick={e => sendStream(myStream)}>Send Stream</button>
       <ReactPlayer url={myStream} playing />
       <ReactPlayer url={remoteStream} playing />
     </div>
