@@ -5,7 +5,14 @@ import { usePeer } from "../providers/Peer";
 
 const Room = () => {
   const { socket } = useSocket();
-  const { createOffer, createAnswer, setRemoteAns, sendStream, remoteStream } = usePeer();
+  const {
+    peer,
+    createOffer,
+    createAnswer,
+    setRemoteAns,
+    sendStream,
+    remoteStream,
+  } = usePeer();
 
   const [myStream, setMyStream] = useState(null);
   const [remoteEmailId, setRemoteEmailId] = useState(null);
@@ -66,6 +73,11 @@ const Room = () => {
     setMyStream(stream);
   }, []);
 
+  const handleNegotiationNeeded = useCallback(async () => {
+    const localOffer = await peer.localDescription;
+    socket.emit("call-user", { emailId: remoteEmailId, offer: localOffer });
+  }, [peer.localDescription, remoteEmailId, socket]);
+
   useEffect(() => {
     console.log("Setting up socket listeners in Room");
     socket.on("user-joined", handleNewUserJoined);
@@ -88,6 +100,13 @@ const Room = () => {
   }, []);
 
   useEffect(() => {
+    peer.addEventListener("negotiationneeded", handleNegotiationNeeded);
+    return () => {
+      peer.removeEventListener("negotiationneeded", handleNegotiationNeeded);
+    };
+  }, [peer, handleNegotiationNeeded]);
+
+  useEffect(() => {
     getUserMediaStream();
   }, [getUserMediaStream]);
 
@@ -95,7 +114,7 @@ const Room = () => {
     <div className="room-page-container">
       <h1>Room</h1>
       <h2>You are connected to: {remoteEmailId}</h2>
-      <button onClick={e => sendStream(myStream)}>Send Stream</button>
+      <button onClick={(e) => sendStream(myStream)}>Send Stream</button>
       <ReactPlayer url={myStream} playing />
       <ReactPlayer url={remoteStream} playing />
     </div>
