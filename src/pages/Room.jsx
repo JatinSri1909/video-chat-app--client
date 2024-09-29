@@ -5,7 +5,7 @@ import { usePeer } from "../providers/Peer";
 
 const Room = () => {
   const { socket } = useSocket();
-  const { createOffer, createAnswer, setRemoteAns, sendStream } = usePeer();
+  const { createOffer, createAnswer, setRemoteAns, sendStream, remoteStream } = usePeer();
 
   const [myStream, setMyStream] = useState(null);
 
@@ -48,11 +48,12 @@ const Room = () => {
       try {
         await setRemoteAns(ans);
         console.log("Set remote answer");
+        await sendStream(myStream);
       } catch (error) {
         console.error("Error setting remote answer:", error);
       }
     },
-    [setRemoteAns]
+    [setRemoteAns, sendStream, myStream]
   );
 
   const getUserMediaStream = useCallback(async () => {
@@ -60,7 +61,6 @@ const Room = () => {
       audio: true,
       video: true,
     });
-    sendStream(stream);
     setMyStream(stream);
   }, []);
 
@@ -92,7 +92,9 @@ const Room = () => {
   return (
     <div className="room-page-container">
       <h1>Room</h1>
+      <button onClick={(e) => sendStream(myStream)}>Send Stream</button>
       <ReactPlayer url={myStream} playing />
+      <ReactPlayer url={remoteStream} playing />
     </div>
   );
 };
