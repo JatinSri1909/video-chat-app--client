@@ -6,12 +6,15 @@ const Home = () => {
   const { socket } = useSocket();
   const navigate = useNavigate();
 
-  const [emailId, setEmailId] = useState('');
-  const [roomId, setRoomId] = useState('');
+  const [emailId, setEmailId] = useState("");
+  const [roomId, setRoomId] = useState("");
 
-  const handleRoomJoined = useCallback(({ roomId }) => {
-    navigate(`/room/${roomId}`);
-  }, [navigate]);
+  const handleRoomJoined = useCallback(
+    ({ roomId }) => {
+      navigate(`/room/${roomId}`);
+    },
+    [navigate]
+  );
 
   useEffect(() => {
     console.log("Setting up socket listeners in Home");
@@ -25,13 +28,23 @@ const Home = () => {
   const handleJoinRoom = () => {
     console.log("Joining room with email:", emailId, "and roomId:", roomId);
     socket.emit("join-room", { roomId, emailId });
-  }
+  };
 
   return (
     <div className="homepage-container">
       <div className="input-container">
-        <input value={emailId} onChange={e => setEmailId(e.target.value)} type="email" placeholder="Enter your email here...." />
-        <input value={roomId} onChange={e => setRoomId(e.target.value)} type="text" placeholder="Enter Room Id" />
+        <input
+          value={emailId}
+          onChange={(e) => setEmailId(e.target.value)}
+          type="email"
+          placeholder="Enter your email here...."
+        />
+        <input
+          value={roomId}
+          onChange={(e) => setRoomId(e.target.value)}
+          type="text"
+          placeholder="Enter Room Id"
+        />
         <button onClick={handleJoinRoom}>Join</button>
       </div>
     </div>

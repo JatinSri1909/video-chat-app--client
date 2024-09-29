@@ -5,7 +5,7 @@ import { usePeer } from "../providers/Peer";
 
 const Room = () => {
   const { socket } = useSocket();
-  const { createOffer, createAnswer, setRemoteAns } = usePeer();
+  const { createOffer, createAnswer, setRemoteAns, sendStream } = usePeer();
 
   const [myStream, setMyStream] = useState(null);
 
@@ -25,34 +25,44 @@ const Room = () => {
     [createOffer, socket]
   );
 
-  const handleIncomingCall = useCallback(async (data) => {
-    const { from, offer } = data;
-    console.log("Incoming call from", from, "with offer", offer);
-    try {
-      const ans = await createAnswer(offer);
-      console.log("Created answer:", ans);
-      socket.emit("call-accepted", { emailId: from, ans });
-      console.log("Emitted call-accepted event with answer");
-    } catch (error) {
-      console.error("Error creating answer:", error);
-    }
-  }, [createAnswer, socket]);
+  const handleIncomingCall = useCallback(
+    async (data) => {
+      const { from, offer } = data;
+      console.log("Incoming call from", from, "with offer", offer);
+      try {
+        const ans = await createAnswer(offer);
+        console.log("Created answer:", ans);
+        socket.emit("call-accepted", { emailId: from, ans });
+        console.log("Emitted call-accepted event with answer");
+      } catch (error) {
+        console.error("Error creating answer:", error);
+      }
+    },
+    [createAnswer, socket]
+  );
 
-  const handleCallAccepted = useCallback(async (data) => {
-    const { from, ans } = data;
-    console.log("Call accepted from", from, "with answer", ans);
-    try {
-      await setRemoteAns(ans);
-      console.log("Set remote answer");
-    } catch (error) {
-      console.error("Error setting remote answer:", error);
-    }
-  }, [setRemoteAns]);
+  const handleCallAccepted = useCallback(
+    async (data) => {
+      const { from, ans } = data;
+      console.log("Call accepted from", from, "with answer", ans);
+      try {
+        await setRemoteAns(ans);
+        console.log("Set remote answer");
+      } catch (error) {
+        console.error("Error setting remote answer:", error);
+      }
+    },
+    [setRemoteAns]
+  );
 
   const getUserMediaStream = useCallback(async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: true,
+    });
+    sendStream(stream);
     setMyStream(stream);
-  },[]);
+  }, []);
 
   useEffect(() => {
     console.log("Setting up socket listeners in Room");
@@ -77,8 +87,7 @@ const Room = () => {
 
   useEffect(() => {
     getUserMediaStream();
-  },[getUserMediaStream])
-
+  }, [getUserMediaStream]);
 
   return (
     <div className="room-page-container">
