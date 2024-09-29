@@ -8,6 +8,7 @@ const Room = () => {
   const { createOffer, createAnswer, setRemoteAns, sendStream, remoteStream } = usePeer();
 
   const [myStream, setMyStream] = useState(null);
+  const [remoteEmailId, setRemoteEmailId] = useState(null);
 
   const handleNewUserJoined = useCallback(
     async (data) => {
@@ -18,6 +19,7 @@ const Room = () => {
         console.log("Created offer:", offer);
         socket.emit("call-user", { emailId, offer });
         console.log("Emitted call-user event with offer");
+        setRemoteEmailId(emailId);
       } catch (error) {
         console.error("Error creating offer:", error);
       }
@@ -34,6 +36,7 @@ const Room = () => {
         console.log("Created answer:", ans);
         socket.emit("call-accepted", { emailId: from, ans });
         console.log("Emitted call-accepted event with answer");
+        setRemoteEmailId(from);
       } catch (error) {
         console.error("Error creating answer:", error);
       }
@@ -91,6 +94,7 @@ const Room = () => {
   return (
     <div className="room-page-container">
       <h1>Room</h1>
+      <h2>You are connected to: {remoteEmailId}</h2>
       <button onClick={e => sendStream(myStream)}>Send Stream</button>
       <ReactPlayer url={myStream} playing />
       <ReactPlayer url={remoteStream} playing />
