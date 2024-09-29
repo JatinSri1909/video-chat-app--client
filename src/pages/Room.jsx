@@ -10,36 +10,63 @@ const Room = () => {
     async (data) => {
       const { emailId } = data;
       console.log("User", emailId, "joined the room");
-      const offer = await createOffer();
-      socket.emit("call-user", { emailId, offer });
+      try {
+        const offer = await createOffer();
+        console.log("Created offer:", offer);
+        socket.emit("call-user", { emailId, offer });
+        console.log("Emitted call-user event with offer");
+      } catch (error) {
+        console.error("Error creating offer:", error);
+      }
     },
     [createOffer, socket]
   );
 
-  const handleIncomingCall = useCallback(async(data) => {
+  const handleIncomingCall = useCallback(async (data) => {
     const { from, offer } = data;
-    console.log("Incoming call from", from, offer);
-    const ans = await createAnswer(offer);
-    socket.emit("call-accepted", { emailId: from, ans });
-  }, [createAnswer ,socket]);
+    console.log("Incoming call from", from, "with offer", offer);
+    try {
+      const ans = await createAnswer(offer);
+      console.log("Created answer:", ans);
+      socket.emit("call-accepted", { emailId: from, ans });
+      console.log("Emitted call-accepted event with answer");
+    } catch (error) {
+      console.error("Error creating answer:", error);
+    }
+  }, [createAnswer, socket]);
 
-  const handleCallAccepted = useCallback(async(data) => {
+  const handleCallAccepted = useCallback(async (data) => {
     const { from, ans } = data;
-    console.log("Call accepted from", from, ans);
-    await setRemoteAns(ans);
+    console.log("Call accepted from", from, "with answer", ans);
+    try {
+      await setRemoteAns(ans);
+      console.log("Set remote answer");
+    } catch (error) {
+      console.error("Error setting remote answer:", error);
+    }
   }, [setRemoteAns]);
 
   useEffect(() => {
+    console.log("Setting up socket listeners in Room");
     socket.on("user-joined", handleNewUserJoined);
     socket.on("incoming-call", handleIncomingCall);
     socket.on("call-accepted", handleCallAccepted);
 
     return () => {
+      console.log("Cleaning up socket listeners in Room");
       socket.off("user-joined", handleNewUserJoined);
       socket.off("incoming-call", handleIncomingCall);
       socket.off("call-accepted", handleCallAccepted);
     };
   }, [socket, handleNewUserJoined, handleIncomingCall, handleCallAccepted]);
+
+  useEffect(() => {
+    console.log("Component mounted");
+    return () => {
+      console.log("Component unmounted");
+    };
+  }, []);
+
 
   return (
     <div className="room-page-container">

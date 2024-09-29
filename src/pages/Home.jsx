@@ -14,13 +14,16 @@ const Home = () => {
   }, [navigate]);
 
   useEffect(() => {
+    console.log("Setting up socket listeners in Home");
     socket.on("joined-room", handleRoomJoined);
     return () => {
+      console.log("Cleaning up socket listeners in Home");
       socket.off("joined-room", handleRoomJoined);
     };
   }, [socket, handleRoomJoined]);
 
   const handleJoinRoom = () => {
+    console.log("Joining room with email:", emailId, "and roomId:", roomId);
     socket.emit("join-room", { roomId, emailId });
   }
 

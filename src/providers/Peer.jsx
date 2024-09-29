@@ -21,21 +21,37 @@ export const PeerProvider = (props) => {
   );
 
   const createOffer = async () => {
-    const offer = await peer.createOffer();
-    await peer.setLocalDescription(offer);
-    return offer;
-  }
+    try {
+      const offer = await peer.createOffer();
+      await peer.setLocalDescription(offer);
+      return offer;
+    } catch (error) {
+      console.error("Error creating offer:", error);
+      throw error;
+    }
+  };
 
   const createAnswer = async (offer) => {
-    await peer.setRemoteDescription(offer);
-    const answer = await peer.createAnswer();
-    await peer.setLocalDescription(answer);
-    return answer;
+    try {
+      await peer.setRemoteDescription(offer);
+      const answer = await peer.createAnswer();
+      await peer.setLocalDescription(answer);
+      return answer;
+    } catch (error) {
+      console.error("Error creating answer:", error);
+      throw error;
+    }
   };
 
   const setRemoteAns = async (ans) => {
-    await peer.setRemoteDescription(ans);
-  }
+    try {
+      await peer.setRemoteDescription(ans);
+    } catch (error) {
+      console.error("Error setting remote answer:", error);
+      throw error;
+    }
+  };
+
 
   return (
     <PeerContext.Provider value={{peer, createOffer, createAnswer, setRemoteAns }}>
