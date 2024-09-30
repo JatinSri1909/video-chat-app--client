@@ -120,7 +120,7 @@ const Room = () => {
       <h1>Room</h1>
       <h2>You are connected to: {remoteEmailId}</h2>
       <button onClick={(e) => sendStream(myStream)}>Send Stream</button>
-      <ReactPlayer url={myStream} playing />
+      <ReactPlayer url={myStream} playing muted />
       <ReactPlayer url={remoteStream} playing />
     </div>
   );
