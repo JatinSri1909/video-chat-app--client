@@ -22,6 +22,7 @@ const Room = () => {
       const { emailId } = data;
       console.log("User", emailId, "joined the room");
       try {
+        await sendStream(myStream);
         const offer = await createOffer();
         console.log("Created offer:", offer);
         socket.emit("call-user", { emailId, offer });
@@ -31,7 +32,7 @@ const Room = () => {
         console.error("Error creating offer:", error);
       }
     },
-    [createOffer, socket]
+    [createOffer, socket, sendStream, myStream]
   );
 
   const handleIncomingCall = useCallback(
