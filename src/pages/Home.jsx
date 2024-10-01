@@ -19,9 +19,16 @@ const Home = () => {
 
   const handleJoinRoom = useCallback(
     (data) => {
-      const { email, room } = data;
+      const { room } = data;
       navigate(`/room/${room}`);
     },[navigate]);
+
+    useEffect(() => {
+      socket.on("room:join", handleJoinRoom);
+      return () => {
+        socket.off("room:join", handleJoinRoom);
+      };
+    },[socket, handleJoinRoom]);
 
   return (
     <div className="homepage-container">
