@@ -23,7 +23,19 @@ const Room = () => {
     setMyStream(stream);
     }, [remoteSocketId, socket]);
 
-    
+    const handleIncomingCall = useCallback(
+      async ({ from, offer}) => {
+        setRemoteSocketId(from);
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+        setMyStream(stream);
+        console.log(`Incoming Call`, from, offer);
+        const ans = await peer.getAnswer(offer);
+        socket.emit("call:accepted", { to: from, ans });
+      }
+    )
 
   return (
     <div className="room-container">
