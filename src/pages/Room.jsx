@@ -39,11 +39,19 @@ const Room = () => {
   );
 
   const sendStreams = useCallback(() => {
-    for(const track of myStream.getTracks()) {
+    for (const track of myStream.getTracks()) {
       peer.peer.addTrack(track, myStream);
     }
   }, [myStream]);
 
+  const handleCallAccepted = useCallback(
+    ({ from, ans }) => {
+      peer.setLocalDescription(ans);
+      console.log(`Call Accepted`, from, ans);
+      sendStreams();
+    },
+    [sendStreams]
+  );
   return (
     <div className="room-container">
       <div className="player-container">
