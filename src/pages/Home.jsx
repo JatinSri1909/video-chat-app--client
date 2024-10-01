@@ -9,21 +9,13 @@ const Home = () => {
   const [email, setEmail] = useState("");
   const [room, setRoom] = useState("");
 
-  const handleRoomJoined = useCallback(
-    ({ room }) => {
-      navigate(`/room/${room}`);
+  const handleSubmitForm = useCallback(
+    (e) => {
+      e.preventDefault();
+      socket.emit("room:join", { email, room });
     },
-    [navigate]
-  );
-
-  useEffect(() => {
-    console.log("Setting up socket listeners in Home");
-    socket.on("joined-room", handleRoomJoined);
-    return () => {
-      console.log("Cleaning up socket listeners in Home");
-      socket.off("joined-room", handleRoomJoined);
-    };
-  }, [socket, handleRoomJoined]);
+    [email, room, socket]
+  )
 
   const handleJoinRoom = () => {
     console.log("Joining room with email:", email, "and room:", room);
