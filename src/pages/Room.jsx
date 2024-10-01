@@ -8,7 +8,7 @@ const Room = () => {
   const [myStream, setMyStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
 
-  const handleUserJoined = useCallback(({ email, id}) => {
+  const handleUserJoined = useCallback(({ email, id }) => {
     console.log(`User ${email} joined the room`);
     setRemoteSocketId(id);
   }, []);
@@ -21,21 +21,28 @@ const Room = () => {
     const offer = await peer.getOffer();
     socket.emit("user:call", { to: remoteSocketId, offer });
     setMyStream(stream);
-    }, [remoteSocketId, socket]);
+  }, [remoteSocketId, socket]);
 
-    const handleIncomingCall = useCallback(
-      async ({ from, offer}) => {
-        setRemoteSocketId(from);
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
-        setMyStream(stream);
-        console.log(`Incoming Call`, from, offer);
-        const ans = await peer.getAnswer(offer);
-        socket.emit("call:accepted", { to: from, ans });
-      }
-    )
+  const handleIncomingCall = useCallback(
+    async ({ from, offer }) => {
+      setRemoteSocketId(from);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      setMyStream(stream);
+      console.log(`Incoming Call`, from, offer);
+      const ans = await peer.getAnswer(offer);
+      socket.emit("call:accepted", { to: from, ans });
+    },
+    [socket]
+  );
+
+  const sendStreams = useCallback(() => {
+    for(const track of myStream.getTracks()) {
+      peer.peer.addTrack(track, myStream);
+    }
+  }, [myStream]);
 
   return (
     <div className="room-container">
