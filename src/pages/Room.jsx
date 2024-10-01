@@ -13,6 +13,18 @@ const Room = () => {
     setRemoteSocketId(id);
   }, []);
 
+  const handleCallUser = useCallback(async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+    const offer = await peer.getOffer();
+    socket.emit("user:call", { to: remoteSocketId, offer });
+    setMyStream(stream);
+    }, [remoteSocketId, socket]);
+
+    
+
   return (
     <div className="room-container">
       <div className="player-container">
