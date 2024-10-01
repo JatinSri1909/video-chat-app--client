@@ -8,7 +8,10 @@ const Room = () => {
   const [myStream, setMyStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
 
-  
+  const handleUserJoined = useCallback(({ email, id}) => {
+    console.log(`User ${email} joined the room`);
+    setRemoteSocketId(id);
+  }, []);
 
   return (
     <div className="room-container">
