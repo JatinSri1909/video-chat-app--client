@@ -17,10 +17,11 @@ const Home = () => {
     [email, room, socket]
   )
 
-  const handleJoinRoom = () => {
-    console.log("Joining room with email:", email, "and room:", room);
-    socket.emit("join-room", { room, email });
-  };
+  const handleJoinRoom = useCallback(
+    (data) => {
+      const { email, room } = data;
+      navigate(`/room/${room}`);
+    },[navigate]);
 
   return (
     <div className="homepage-container">
