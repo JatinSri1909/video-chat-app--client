@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState } from "react";
 import ReactPlayer from "react-player";
 import { useSocket } from "../providers/Socket";
-import { peer } from "../providers/Peer";
+import { peer } from "../providers/peer";
 const Room = () => {
   const socket = useSocket();
   const [remoteSocketId, setRemoteSocketId] = useState(null);
@@ -52,6 +52,14 @@ const Room = () => {
     },
     [sendStreams]
   );
+
+  const handleNegoNeeded = useCallback( async() => {
+    const offer = await peer.getOffer();
+    socket.emit("peer:nego:needed", {offer, to: remoteSocketId});
+  },[remoteSocketId,socket]);
+
+  
+
   return (
     <div className="room-container">
       <div className="player-container">
