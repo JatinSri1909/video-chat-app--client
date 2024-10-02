@@ -77,6 +77,14 @@ const Room = () => {
     await peer.setLocalDescription(ans);
   }, []);
 
+  useEffect(() => {
+    peer.peer.addEventListener("track", async (event) => {
+      const remoteStream = event.streams;
+      console.log("GOT TRACKS");
+      setRemoteStream(remoteStream[0]);
+    });
+  }, []);
+
   return (
     <div className="room-container">
       <div className="player-container">
