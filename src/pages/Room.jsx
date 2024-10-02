@@ -65,6 +65,14 @@ const Room = () => {
     };
   }, [handleNegoNeeded]);
 
+  const handleNegoNeedIncoming = useCallback(
+    async ({ from, offer }) => {
+      const ans = await peer.getAnswer(offer);
+      socket.emit("peer:nego:done", { to: from, ans });
+    },
+    [socket]
+  );
+
   return (
     <div className="room-container">
       <div className="player-container">
