@@ -73,6 +73,10 @@ const Room = () => {
     [socket]
   );
 
+  const handleNegoNeedFinal = useCallback(async ({ ans }) => {
+    await peer.setLocalDescription(ans);
+  }, []);
+
   return (
     <div className="room-container">
       <div className="player-container">
