@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState } from "react";
 import ReactPlayer from "react-player";
 import { useSocket } from "../providers/Socket";
-import { peer } from "../providers/peer";
+import peer from "../providers/peer";
 const Room = () => {
   const socket = useSocket();
   const [remoteSocketId, setRemoteSocketId] = useState(null);
