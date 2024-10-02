@@ -53,12 +53,17 @@ const Room = () => {
     [sendStreams]
   );
 
-  const handleNegoNeeded = useCallback( async() => {
+  const handleNegoNeeded = useCallback(async () => {
     const offer = await peer.getOffer();
-    socket.emit("peer:nego:needed", {offer, to: remoteSocketId});
-  },[remoteSocketId,socket]);
+    socket.emit("peer:nego:needed", { offer, to: remoteSocketId });
+  }, [remoteSocketId, socket]);
 
-  
+  useEffect(() => {
+    peer.peer.addEventListener("negotiationneeded", handleNegoNeeded);
+    return () => {
+      peer.peer.removeEventListener("negotiationneeded", handleNegoNeeded);
+    };
+  }, [handleNegoNeeded]);
 
   return (
     <div className="room-container">
