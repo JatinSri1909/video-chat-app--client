@@ -85,6 +85,29 @@ const Room = () => {
     });
   }, []);
 
+  useEffect(() => {
+    socket.on("user:joined", handleUserJoined);
+    socket.on("incoming:call", handleIncomingCall);
+    socket.on("call:accepted", handleCallAccepted);
+    socket.on("peer:nego:needed", handleNegoNeedIncoming);
+    socket.on("peer:nego:final", handleNegoNeedFinal);
+
+    return () => {
+      socket.off("user:joined", handleUserJoined);
+      socket.off("incoming:call", handleIncomingCall);
+      socket.off("call:accepted", handleCallAccepted);
+      socket.off("peer:nego:needed", handleNegoNeedIncoming);
+      socket.off("peer:nego:final", handleNegoNeedFinal);
+    };
+  }, [
+    socket,
+    handleUserJoined,
+    handleIncomingCall,
+    handleCallAccepted,
+    handleNegoNeedIncoming,
+    handleNegoNeedFinal,
+  ]);
+
   return (
     <div className="room-container">
       <div className="player-container">
