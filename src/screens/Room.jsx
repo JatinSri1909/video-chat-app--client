@@ -20,6 +20,7 @@ const Room = () => {
       audio: true,
     });
     const offer = await peerServiceInstance.getOffer();
+    await peerServiceInstance.setLocalDescription(offer);
     socket.emit("user:call", { to: remoteSocketId, offer });
     setMyStream(stream);
   }, [socket, remoteSocketId]);
@@ -32,7 +33,9 @@ const Room = () => {
         audio: true,
       });
       setMyStream(stream);
-      console.log("Incomming call from ", from, offer);
+      for (const track of stream.getTracks()) {
+        peerServiceInstance.peer.addTrack(track, stream);
+      }
       const ans = await peerServiceInstance.getAnswer(offer);
       socket.emit("call:accepted", { to: from, ans });
     },
@@ -85,7 +88,7 @@ const Room = () => {
   }, [handleNegoNeeded]);
 
   useEffect(() => {
-    peerServiceInstance.peer.addEventListener("track", async (event) => {
+    peerServiceInstance.peer.addEventListener("track", (event) => {
       const remoteStream = event.streams;
       console.log("GOT TRACKS!!!");
       setRemoteStream(remoteStream[0]);
@@ -123,23 +126,26 @@ const Room = () => {
       {myStream && (
         <>
           <h1>My Stream</h1>
-          <ReactPlayer
-            url={myStream}
-            playing
+          <video
+            ref={(video) => {
+              if (video) video.srcObject = myStream;
+            }}
+            autoPlay
             muted
-            height="500px"
-            width="500px"
+            style={{ width: "500px", height: "500px" }}
           />
         </>
       )}
+
       {remoteStream && (
         <>
           <h1>Remote Stream</h1>
-          <ReactPlayer
-            url={remoteStream}
-            playing
-            height="500px"
-            width="500px"
+          <video
+            ref={(video) => {
+              if (video) video.srcObject = remoteStream;
+            }}
+            autoPlay
+            style={{ width: "500px", height: "500px" }}
           />
         </>
       )}
