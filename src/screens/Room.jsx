@@ -88,6 +88,7 @@ const Room = () => {
     peerServiceInstance.peer.addEventListener("track", async (event) => {
       const remoteStream = event.streams;
       console.log("GOT TRACKS!!!");
+      console.log(remoteStream[0])
       setRemoteStream(remoteStream[0]);
     });
   }, []);
